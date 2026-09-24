@@ -51,8 +51,15 @@ jobs:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USER }}
           key: ${{ secrets.VM_SSH_KEY }}
+          # Rutas absolutas explícitas: no depende de en qué carpeta arranca
+          # la sesión SSH (evita bugs de "cd" silencioso a otro directorio).
           script: |
-            cd ~/rockisdead
-            docker compose --env-file .env pull app
-            docker compose --env-file .env up -d app
+            set -e
+            cd /home/${{ secrets.VM_USER }}/rockisdead
+            echo "Desplegando desde: $(pwd)"
+            ls -la
+            docker compose --project-directory /home/${{ secrets.VM_USER }}/rockisdead \
+              --env-file /home/${{ secrets.VM_USER }}/rockisdead/.env pull app
+            docker compose --project-directory /home/${{ secrets.VM_USER }}/rockisdead \
+              --env-file /home/${{ secrets.VM_USER }}/rockisdead/.env up -d app
             docker image prune -f

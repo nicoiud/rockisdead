@@ -4,7 +4,7 @@ name: Build and deploy
 # Registry. La VM no compila nada: solo la descarga y la reinicia por SSH.
 on:
   push:
-    branches: [main]
+    branches: [main, claude/rock-is-dead-mens-clothing-ju6gu4]
   workflow_dispatch: {}
 
 env:

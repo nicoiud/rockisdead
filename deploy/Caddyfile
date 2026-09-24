@@ -1,5 +1,10 @@
 # HTTPS automático (Let's Encrypt) por dominio. Cambiá el dominio y agregá un
 # bloque por cada tienda nueva; Caddy renueva los certificados solo.
+#
+# ¿Todavía no compraste un dominio? Usá <tu-ip-con-guiones>.sslip.io, por
+# ejemplo 167-126-12-141.sslip.io para la IP 167.126.12.141. Resuelve solo
+# (sin registrarte en nada) y Caddy le saca certificado HTTPS igual. Cuando
+# tengas el dominio real, reemplazá esta línea y corré `docker compose up -d`.
 
 tudominio.com, www.tudominio.com {
 	encode gzip

@@ -122,7 +122,7 @@ export default async function AdminOrderPage(props: PageProps<"/admin/pedidos/[i
             </Card>
           )}
           <Card title="Estado del pedido">
-            <StatusForm key={order.updated_at} orderId={order.id} status={order.status} tracking={order.tracking_code} />
+            <StatusForm orderId={order.id} status={order.status} tracking={order.tracking_code} />
           </Card>
           <Card title="Info">
             <dl className="space-y-1 text-xs">

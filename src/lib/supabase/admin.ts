@@ -1,6 +1,7 @@
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
 import { SUPABASE_URL, supabaseSecretKey } from "@/lib/env";
+import { freshFetch } from "./fetch";
 
 /**
  * Cliente con service role: saltea RLS. Usar SOLO en el servidor y
@@ -9,5 +10,6 @@ import { SUPABASE_URL, supabaseSecretKey } from "@/lib/env";
 export function createAdminClient() {
   return createClient(SUPABASE_URL, supabaseSecretKey(), {
     auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: freshFetch },
   });
 }

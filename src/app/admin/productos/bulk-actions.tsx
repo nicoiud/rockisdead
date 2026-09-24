@@ -34,7 +34,7 @@ export function BulkActionsBar({
   count: number;
   target: { ids?: string[]; filter?: string };
   categories: { id: string; name: string }[];
-  onDone: () => void;
+  onDone: (message: string) => void;
 }) {
   const [action, setAction] = useState<ActionKey>("publish");
   const [categoryId, setCategoryId] = useState("");
@@ -91,8 +91,7 @@ export function BulkActionsBar({
     startTransition(async () => {
       const res = await bulkProductsAction(target, input);
       if (res.ok) {
-        setMessage({ tone: "success", text: `Listo: ${res.count} producto(s) actualizados.` });
-        onDone();
+        onDone(action === "delete" ? `Listo: ${res.count} producto(s) eliminados.` : `Listo: ${res.count} producto(s) actualizados.`);
       } else {
         setMessage({ tone: "error", text: res.error });
       }

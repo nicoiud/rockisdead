@@ -20,21 +20,21 @@ export default async function OrderPage(props: PageProps<"/pedido/[id]">) {
   const token = typeof sp.t === "string" ? sp.t : null;
   if (!/^[0-9a-f-]{36}$/i.test(id)) notFound();
 
-  const db = createAdminClient();
-  let { data: order } = await db.from("orders").select("*").eq("id", id).maybeSingle<Order>();
-  if (!order || !(await canAccessOrder(order, token))) notFound();
-
-  // Retorno desde Mercado Pago: sincroniza el pago sin esperar al webhook
+  // Retorno desde Mercado Pago: sincroniza el pago sin esperar al webhook.
+  // Se hace antes de leer el pedido (Next memoiza lecturas idénticas en el mismo render).
+  // Es inocuo: los datos vienen de la API de MP y solo afectan al pedido referenciado.
   const mpPaymentId = typeof sp.payment_id === "string" ? sp.payment_id : typeof sp.collection_id === "string" ? sp.collection_id : null;
-  if (mpPaymentId && /^\d+$/.test(mpPaymentId) && order.payment_method === "mercado_pago") {
+  if (mpPaymentId && /^\d+$/.test(mpPaymentId)) {
     try {
       await syncMercadoPagoPayment(mpPaymentId);
-      ({ data: order } = await db.from("orders").select("*").eq("id", id).maybeSingle<Order>());
     } catch (e) {
       console.error("[pedido] sync MP", e);
     }
   }
-  if (!order) notFound();
+
+  const db = createAdminClient();
+  const { data: order } = await db.from("orders").select("*").eq("id", id).maybeSingle<Order>();
+  if (!order || !(await canAccessOrder(order, token))) notFound();
 
   const [settings, { data: items }, { data: payments }, { data: history }] = await Promise.all([
     getSettings(),

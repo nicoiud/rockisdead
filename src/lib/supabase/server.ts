@@ -2,11 +2,13 @@ import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { SUPABASE_PUBLIC_KEY, SUPABASE_URL } from "@/lib/env";
+import { freshFetch } from "./fetch";
 
 /** Cliente con la sesión del usuario (respeta RLS). */
 export async function createClient() {
   const cookieStore = await cookies();
   return createServerClient(SUPABASE_URL, SUPABASE_PUBLIC_KEY, {
+    global: { fetch: freshFetch },
     cookies: {
       getAll() {
         return cookieStore.getAll();

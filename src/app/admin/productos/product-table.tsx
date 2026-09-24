@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { formatMoney } from "@/lib/format";
 import { PRODUCT_STATUS_LABEL } from "@/lib/labels";
 import type { ProductOverview } from "@/lib/types";
-import { Badge, EmptyState } from "@/components/ui";
+import { Alert, Badge, EmptyState } from "@/components/ui";
 import { BulkActionsBar } from "./bulk-actions";
 
 export function ProductTable({
@@ -24,12 +24,14 @@ export function ProductTable({
 }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [allMatching, setAllMatching] = useState(false);
+  const [done, setDone] = useState<string | null>(null);
   const router = useRouter();
   const [, startTransition] = useTransition();
 
   const allOnPage = products.length > 0 && products.every((p) => selected.has(p.id));
   const toggle = (id: string) => {
     setAllMatching(false);
+    setDone(null);
     setSelected((s) => {
       const n = new Set(s);
       if (n.has(id)) n.delete(id);
@@ -42,18 +44,27 @@ export function ProductTable({
     setSelected(allOnPage ? new Set() : new Set(products.map((p) => p.id)));
   };
 
-  if (!products.length) return <EmptyState>No hay productos con esos filtros.</EmptyState>;
+  if (!products.length) {
+    return (
+      <div className="space-y-3">
+        {done && <Alert tone="success">{done}</Alert>}
+        <EmptyState>No hay productos con esos filtros.</EmptyState>
+      </div>
+    );
+  }
 
   const count = allMatching ? total : selected.size;
 
   return (
     <div className="space-y-3">
+      {done && count === 0 && <Alert tone="success">{done}</Alert>}
       {count > 0 && (
         <BulkActionsBar
           count={count}
           target={allMatching ? { filter: filterQuery } : { ids: [...selected] }}
           categories={categories}
-          onDone={() => {
+          onDone={(message) => {
+            setDone(message);
             setSelected(new Set());
             setAllMatching(false);
             startTransition(() => router.refresh());

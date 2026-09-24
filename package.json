@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "vitest run"
+    "test": "vitest run",
+    "test:e2e": "tests/e2e/run-all.sh"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -30,6 +31,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.6",
+    "pg": "^8.23.0",
+    "playwright": "^1.63.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "vitest": "^5.0.1"

@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# e2e
+/tests/e2e/import.csv
+/tests/e2e/export.xlsx
+
+!.env.example

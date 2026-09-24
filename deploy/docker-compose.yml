@@ -1,0 +1,39 @@
+# Corre en la VM (Oracle Cloud u otra). Levanta la tienda y Caddy (proxy con
+# HTTPS automático). Cada marca/tienda nueva se agrega como otro servicio
+# "app-<nombre>" + su bloque en Caddyfile; comparten esta misma VM.
+#
+# Uso:
+#   docker compose --env-file .env pull && docker compose --env-file .env up -d
+#
+# Actualizar a la última imagen (lo hace también deploy.yml por SSH):
+#   docker compose --env-file .env pull app && docker compose --env-file .env up -d app
+
+services:
+  app:
+    image: ${APP_IMAGE:-ghcr.io/OWNER/REPO:latest}
+    restart: unless-stopped
+    env_file: .env
+    expose:
+      - "3000"
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:3000/').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+volumes:
+  caddy_data:
+  caddy_config:

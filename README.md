@@ -103,10 +103,18 @@ Después, desde **Admin > Usuarios** se agregan más administradores o staff con
 3. **Authentication > URL Configuration**: *Site URL* = `https://tudominio.com` y en *Redirect URLs* agregar `https://tudominio.com/**`.
 4. **Authentication > Emails > SMTP**: configurar un SMTP propio (Resend ofrece SMTP) para no depender del límite del SMTP de prueba de Supabase.
 
-### 2. Vercel
-1. Importar el repositorio de GitHub.
-2. Cargar las variables de entorno de `.env.example` (con `NEXT_PUBLIC_SITE_URL` = dominio final).
-3. El cron del reporte semanal ya está definido en `vercel.json`; solo requiere `CRON_SECRET`.
+### 2. Hosting
+Dos caminos, según el `next.config.ts` (que ya tiene `output: "standalone"`,
+compatible con ambos):
+
+- **Vercel** (el más simple; su plan Hobby es solo para uso no comercial —
+  ver [Fair Use Guidelines](https://vercel.com/docs/limits/fair-use-guidelines)):
+  importar el repo, cargar las variables de `.env.example` y agregar un
+  `vercel.json` con el cron (`{"crons":[{"path":"/api/cron/weekly-report","schedule":"0 12 * * 1"}]}`).
+- **VM propia gratis (Oracle Cloud, capa Always Free) + Docker + Caddy**:
+  build automático en GitHub Actions, sin restricción de uso comercial. Ver
+  **[DEPLOY.md](./DEPLOY.md)** para la guía paso a paso completa (Supabase,
+  dominio, VM, HTTPS y despliegue continuo).
 
 ### 3. Mercado Pago
 1. En [Tus integraciones](https://www.mercadopago.com.ar/developers/panel/app) crear una aplicación (Checkout Pro).

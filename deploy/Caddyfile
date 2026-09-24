@@ -1,0 +1,18 @@
+# HTTPS automático (Let's Encrypt) por dominio. Cambiá el dominio y agregá un
+# bloque por cada tienda nueva; Caddy renueva los certificados solo.
+
+tudominio.com, www.tudominio.com {
+	encode gzip
+
+	# Los archivos de Next (JS/CSS) llevan hash en el nombre: se pueden
+	# cachear para siempre. El resto lo decide la propia app.
+	@static path /_next/static/*
+	header @static Cache-Control "public, max-age=31536000, immutable"
+
+	reverse_proxy app:3000
+}
+
+# Ejemplo de una segunda tienda en la misma VM:
+# otramarca.com {
+# 	reverse_proxy app-otramarca:3000
+# }

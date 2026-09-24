@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+.env*
+!.env.example
+tests/e2e/*.png
+tests/e2e/import.csv
+tests/e2e/export.xlsx
+supabase/.temp

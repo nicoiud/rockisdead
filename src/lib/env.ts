@@ -6,9 +6,11 @@ export const SUPABASE_PUBLIC_KEY =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
 
 export function siteUrl(): string {
+  // "??" no cae al valor por defecto si la variable está definida pero vacía
+  // (ej. un --build-arg sin valor); por eso se filtra explícitamente.
   const url =
-    process.env.NEXT_PUBLIC_SITE_URL ??
-    (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : null) ??
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}` : "") ||
     "http://localhost:3000";
   return url.replace(/\/$/, "");
 }

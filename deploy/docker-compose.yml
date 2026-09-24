@@ -7,6 +7,11 @@
 #
 # Actualizar a la última imagen (lo hace también deploy.yml por SSH):
 #   docker compose --env-file .env pull app && docker compose --env-file .env up -d app
+#
+# Nombre de proyecto fijo: si esta VM corre otros docker-compose (ej. n8n),
+# evita que Docker mezcle o pise contenedores/volúmenes entre proyectos aunque
+# algún comando se ejecute por error desde la carpeta equivocada.
+name: rockisdead
 
 services:
   app:
